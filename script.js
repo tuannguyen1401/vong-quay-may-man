@@ -11,9 +11,10 @@ const PRIZES = [
     },
     {
         id: "chuc_1",
-        name: "Mẹ tròn con vuông",
+        name: "Mẹ Tròn Con Vuông",
         type: "blessing",
         emoji: "🌸",
+        desc: "Chúc mẹ có một hành trình vượt cạn an lành, suôn sẻ và nhẹ nhàng đón thiên thần nhỏ chào đời trong tiếng cười ấm áp.",
         bgHex: "#FDE68A",
         textHex: "#78350F",
     },
@@ -27,9 +28,10 @@ const PRIZES = [
     },
     {
         id: "chuc_2",
-        name: "Bé khoẻ bé ngoan",
+        name: "Bé Khỏe Mẹ Vui",
         type: "blessing",
         emoji: "👶",
+        desc: "Chúc em bé ngoan ngoãn phát triển khỏe mạnh mỗi ngày, luôn là niềm tự hào và nguồn năng lượng tích cực nhất của mẹ.",
         bgHex: "#86EFAC",
         textHex: "#14532D",
     },
@@ -43,32 +45,37 @@ const PRIZES = [
     },
     {
         id: "chuc_3",
-        name: "Hạnh phúc viên mãn",
+        name: "Hạnh Phúc Đong Đầy",
         type: "blessing",
         emoji: "💕",
+        desc: "Gửi tặng mẹ bầu những cái ôm ấm áp nhất. Chúc tổ ấm nhỏ luôn tràn ngập tình yêu thương và tiếng cười hạnh phúc chuẩn bị chào đón con.",
         bgHex: "#FDBA74",
         textHex: "#7C2D12",
     },
     {
         id: "chuc_4",
-        name: "Thai kỳ bình an",
+        name: "Thai Kỳ Bình An",
         type: "blessing",
-        emoji: "🌷",
+        emoji: "🤰",
+        desc: "Chúc mẹ một thai kỳ thật bình an, nhẹ nhàng và ngập tràn hạnh phúc. Mỗi ngày trôi qua đều là một trải nghiệm tuyệt vời đón chờ con yêu.",
         bgHex: "#93C5FD",
         textHex: "#1E3A5F",
     },
     {
         id: "chuc_5",
-        name: "Vạn sự như ý",
+        name: "Vạn Sự Như Ý",
         type: "blessing",
         emoji: "🍀",
+        desc: "Chúc mọi điều may mắn, suôn sẻ nhất sẽ đến với hai mẹ con. Chúc mẹ có một hành trình làm mẹ ngập tràn niềm vui và trọn vẹn hạnh phúc.",
         bgHex: "#F0ABFC",
         textHex: "#581C87",
     },
 ];
 
 // Winning Configuration
-const CONFIGURABLE_WINNING_PRIZE = "Dimao Vitamin D3";
+// Set to a specific prize name (e.g. "Dimao Vitamin D3") to force that win,
+// or set to "RANDOM" to use 20% win probability (50 physical prizes / 250 guests)
+const CONFIGURABLE_WINNING_PRIZE = "RANDOM";
 const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbw--4PL43lqkKKzxyfc1Venw6IDqRzEVLG9VMBNmrm84uEH3MZ8xpxd1gaWjOqQMXiNAg/exec";
 const LOCAL_STORAGE_KEY = "lucky_spin_participation";
 
@@ -106,11 +113,15 @@ const userPhoneDisplay = document.getElementById("user-phone-display");
 
 const alreadyPrizeName = document.getElementById("already-prize-name");
 const alreadyPrizeImg = document.getElementById("already-prize-img");
+const alreadyPrizeDesc = document.getElementById("already-prize-desc");
+const alreadyPrizeBadgeLabel = document.getElementById("already-prize-badge-label");
 const detailsName = document.getElementById("details-name");
 const detailsPhone = document.getElementById("details-phone");
 
 const modalPrizeName = document.getElementById("modal-prize-name");
 const modalPrizeImg = document.getElementById("modal-prize-img");
+const modalPrizeDesc = document.getElementById("modal-prize-desc");
+const modalPrizeBadgeLabel = document.getElementById("modal-prize-badge-label");
 
 // Init application
 document.addEventListener("DOMContentLoaded", () => {
@@ -393,12 +404,23 @@ function renderAlreadySpunScreen(data) {
     if (prizeData && prizeData.type === "prize") {
         alreadyPrizeImg.src = `public/images/${prizeData.id}.png`;
         alreadyPrizeImg.style.display = "block";
+        alreadyPrizeDesc.style.display = "none";
+        alreadyPrizeBadgeLabel.textContent = "🎁 Phần thưởng của bạn";
         // Remove old emoji if exists
         const oldEmoji = alreadyPrizeImg.parentElement.querySelector(".blessing-emoji-display");
         if (oldEmoji) oldEmoji.remove();
     } else {
         // For blessings, show the emoji instead of an image
         alreadyPrizeImg.style.display = "none";
+        alreadyPrizeBadgeLabel.textContent = "🌸 Lời chúc của bạn";
+        
+        if (prizeData && prizeData.desc) {
+            alreadyPrizeDesc.textContent = `"${prizeData.desc}"`;
+            alreadyPrizeDesc.style.display = "block";
+        } else {
+            alreadyPrizeDesc.style.display = "none";
+        }
+
         const frame = alreadyPrizeImg.parentElement;
         const oldEmoji = frame.querySelector(".blessing-emoji-display");
         if (oldEmoji) oldEmoji.remove();
@@ -433,9 +455,28 @@ function triggerSpin() {
     btnSpin.disabled = true;
     btnHub.disabled = true;
 
+    // Determine target prize name (support RANDOM or forced override)
+    let finalWinningPrizeName = CONFIGURABLE_WINNING_PRIZE;
+    if (CONFIGURABLE_WINNING_PRIZE.toUpperCase() === "RANDOM") {
+        // 50 physical prizes for 250 participants = 20% win probability
+        // 80% probability of getting a beautiful blessing
+        const winChance = Math.random() * 100;
+        if (winChance < 20) {
+            // Win a physical product (20% chance) - shared equally among 3 products
+            const physicalProducts = PRIZES.filter(p => p.type === "prize");
+            const chosenProduct = physicalProducts[Math.floor(Math.random() * physicalProducts.length)];
+            finalWinningPrizeName = chosenProduct.name;
+        } else {
+            // Get a blessing (80% chance) - shared equally among 5 blessings
+            const blessings = PRIZES.filter(p => p.type === "blessing");
+            const chosenBlessing = blessings[Math.floor(Math.random() * blessings.length)];
+            finalWinningPrizeName = chosenBlessing.name;
+        }
+    }
+
     // Find target index for the configured prize
     const targetPrizeIndex = PRIZES.findIndex(
-        (p) => p.name.toLowerCase() === CONFIGURABLE_WINNING_PRIZE.toLowerCase()
+        (p) => p.name.toLowerCase() === finalWinningPrizeName.toLowerCase()
     );
     const prizeIndex = targetPrizeIndex !== -1 ? targetPrizeIndex : 0;
 
@@ -519,11 +560,22 @@ function showModal(prizeName) {
     if (prizeData && prizeData.type === "prize") {
         modalPrizeImg.src = `public/images/${prizeData.id}.png`;
         modalPrizeImg.style.display = "block";
+        modalPrizeDesc.style.display = "none";
+        modalPrizeBadgeLabel.textContent = "🎁 Phần thưởng của bạn";
         const oldEmoji = modalPrizeImg.parentElement.querySelector(".blessing-emoji-display");
         if (oldEmoji) oldEmoji.remove();
     } else {
         // For blessings, show the emoji
         modalPrizeImg.style.display = "none";
+        modalPrizeBadgeLabel.textContent = "🌸 Lời chúc của bạn";
+        
+        if (prizeData && prizeData.desc) {
+            modalPrizeDesc.textContent = `"${prizeData.desc}"`;
+            modalPrizeDesc.style.display = "block";
+        } else {
+            modalPrizeDesc.style.display = "none";
+        }
+
         const frame = modalPrizeImg.parentElement;
         const oldEmoji = frame.querySelector(".blessing-emoji-display");
         if (oldEmoji) oldEmoji.remove();
@@ -540,18 +592,15 @@ function showModal(prizeName) {
     const modalTitle = document.querySelector(".modal-congrats-title");
     const modalSubtitle = document.querySelector(".modal-congrats-subtitle");
     const modalTrophy = document.querySelector(".modal-trophy");
-    const prizeLabel = resultModal.querySelector(".prize-badge-label");
 
     if (prizeData && prizeData.type === "blessing") {
         modalTrophy.textContent = prizeData.emoji;
         modalTitle.textContent = "Lời chúc dành cho bạn!";
         modalSubtitle.textContent = "Mẹ & Bé gửi đến bạn lời chúc tốt đẹp nhất 💕";
-        prizeLabel.textContent = "🌸 Lời chúc của bạn";
     } else {
         modalTrophy.textContent = "🏆";
         modalTitle.textContent = "Chúc mừng!";
         modalSubtitle.textContent = "Bạn đã nhận được phần thưởng đặc biệt từ Mẹ & Bé 💕";
-        prizeLabel.textContent = "🎁 Phần thưởng của bạn";
     }
 
     // Confetti shower
