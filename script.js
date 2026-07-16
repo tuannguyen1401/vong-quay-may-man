@@ -82,7 +82,7 @@ const LOCAL_STORAGE_KEY = "lucky_spin_participation";
 // State Management
 let registeredUser = {
     fullName: "Khách hàng",
-    phoneNumber: "0909181752",
+    phoneNumber: "",
     gender: "Male"
 };
 let isSpinning = false;
@@ -110,6 +110,8 @@ const wheelTarget = document.getElementById("wheel-rotation-target");
 const wheelPointer = document.querySelector(".wheel-pointer");
 const userNameDisplay = document.getElementById("user-name-display");
 const userPhoneDisplay = document.getElementById("user-phone-display");
+const inputPhone = document.getElementById("input-phone");
+const phoneErrorMsg = document.getElementById("phone-error-msg");
 
 const alreadyPrizeName = document.getElementById("already-prize-name");
 const alreadyPrizeImg = document.getElementById("already-prize-img");
@@ -137,7 +139,58 @@ document.addEventListener("DOMContentLoaded", () => {
     checkParticipation();
 
     // 4. Hook up event listeners
-    btnGoToSpin.addEventListener("click", () => {
+    btnGoToSpin.addEventListener("click", async () => {
+        const phoneVal = inputPhone ? inputPhone.value.trim() : "";
+        const phoneRegex = /^(0|\+84)[3|5|7|8|9][0-9]{8}$/;
+        if (!phoneRegex.test(phoneVal)) {
+            if (phoneErrorMsg) {
+                phoneErrorMsg.textContent = "⚠️ Số điện thoại không hợp lệ!";
+                phoneErrorMsg.style.display = "flex";
+            }
+            if (inputPhone) {
+                inputPhone.focus();
+                inputPhone.style.borderColor = "#ef4444";
+            }
+            if (navigator.vibrate) navigator.vibrate(100);
+            return;
+        }
+
+        // Show loading state while checking Sheet
+        btnGoToSpin.disabled = true;
+        const originalText = btnGoToSpin.innerHTML;
+        btnGoToSpin.innerHTML = `<span class="btn-spin-content">Đang kiểm tra...</span>`;
+
+        // Check if phone number exists in Google Sheet
+        const alreadyExists = await checkPhoneInGoogleSheet(phoneVal);
+        
+        btnGoToSpin.disabled = false;
+        btnGoToSpin.innerHTML = originalText;
+
+        if (alreadyExists === true) {
+            if (phoneErrorMsg) {
+                phoneErrorMsg.textContent = "⚠️ Số điện thoại này đã quay thưởng trước đó!";
+                phoneErrorMsg.style.display = "flex";
+            }
+            if (inputPhone) {
+                inputPhone.focus();
+                inputPhone.style.borderColor = "#ef4444";
+            }
+            if (navigator.vibrate) navigator.vibrate(100);
+            return;
+        }
+
+        // Phone is valid and not a duplicate, clean error states
+        if (phoneErrorMsg) {
+            phoneErrorMsg.style.display = "none";
+        }
+        if (inputPhone) {
+            inputPhone.style.borderColor = "";
+        }
+
+        registeredUser.phoneNumber = phoneVal;
+        if (userPhoneDisplay) {
+            userPhoneDisplay.textContent = phoneVal;
+        }
         showScreen("spin");
     });
 
@@ -166,7 +219,7 @@ function parseUrlParams() {
     const params = new URLSearchParams(window.location.search);
 
     registeredUser.fullName = params.get("fullName") || params.get("name") || "Khách hàng";
-    registeredUser.phoneNumber = params.get("phoneNumber") || params.get("phone") || "0909181752";
+    registeredUser.phoneNumber = params.get("phoneNumber") || params.get("phone") || "";
 
     const genderParam = params.get("gender") || "Male";
     if (genderParam.toLowerCase() === "female" || genderParam === "Nữ" || genderParam === "nữ") {
@@ -175,7 +228,12 @@ function parseUrlParams() {
 
     // Update labels in real-time
     userNameDisplay.textContent = registeredUser.fullName;
-    userPhoneDisplay.textContent = registeredUser.phoneNumber;
+    if (inputPhone) {
+        inputPhone.value = registeredUser.phoneNumber;
+    }
+    if (userPhoneDisplay) {
+        userPhoneDisplay.textContent = registeredUser.phoneNumber;
+    }
 }
 
 // Preload Images Helper – only load images for "prize" type items
@@ -454,6 +512,9 @@ function triggerSpin() {
     isSpinning = true;
     btnSpin.disabled = true;
     btnHub.disabled = true;
+    if (inputPhone) {
+        inputPhone.disabled = true;
+    }
 
     // Determine target prize name (support RANDOM or forced override)
     let finalWinningPrizeName = CONFIGURABLE_WINNING_PRIZE;
@@ -648,35 +709,94 @@ function triggerConfettiExplosion() {
     }, 250);
 }
 
+// Check if phone number already exists in Google Sheets
+async function checkPhoneInGoogleSheet(phoneNumber) {
+    const cleanPhone = phoneNumber.trim();
+    // Extract sheet ID from the standard sheet link: 12zy1obZCEWqUgF5TSK1_2TqKb1Nw9VX33qVJPO9cAos
+    const sheetId = "12zy1obZCEWqUgF5TSK1_2TqKb1Nw9VX33qVJPO9cAos";
+    // Fetch CSV or JSON. Since the sheet is private, if they make it "Anyone with the link can view",
+    // the gviz/tq endpoint will return the data without requiring authentication.
+    const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json`;
+
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error("Unable to access sheet. Make sure the sheet is shared as 'Anyone with the link can view'");
+        }
+        const text = await response.text();
+        
+        // Extract JSON from google.visualization.Query.setResponse(...)
+        const match = text.match(/google\.visualization\.Query\.setResponse\(([\s\S]*?)\);/);
+        if (!match) {
+            throw new Error("Invalid visualization API format");
+        }
+        
+        const obj = JSON.parse(match[1]);
+        if (!obj.table || !obj.table.rows) {
+            return false;
+        }
+
+        const rows = obj.table.rows;
+        const cols = obj.table.cols;
+        
+        // Find column index for Phone/SĐT
+        let phoneColIdx = -1;
+        for (let i = 0; i < cols.length; i++) {
+            const label = (cols[i].label || "").toLowerCase();
+            if (label === "phone" || label === "sđt" || label === "số điện thoại") {
+                phoneColIdx = i;
+                break;
+            }
+        }
+        
+        // Fallback: timestamp is usually col 0, Phone is col 1
+        if (phoneColIdx === -1) {
+            phoneColIdx = 1;
+        }
+
+        // Compare normalized numbers
+        const normalize = (num) => num.replace(/[\s\-().+]/g, "").replace(/^84/, "0");
+        const normalizedTarget = normalize(cleanPhone);
+
+        for (const row of rows) {
+            if (row.c && row.c[phoneColIdx]) {
+                const cellVal = String(row.c[phoneColIdx].v || "").trim();
+                if (normalize(cellVal) === normalizedTarget) {
+                    return true; // Phone already exists
+                }
+            }
+        }
+        return false;
+    } catch (e) {
+        console.warn("Could not check duplicate phone on Google Sheet:", e.message);
+        // Return null if check is inconclusive (private sheet, CORS, offline)
+        return null;
+    }
+}
+
 // Google Sheets API submission
 async function submitSpinResult(formData, prizeName) {
     try {
-        const timestamp = new Date().toISOString();
-
         if (!GOOGLE_SHEETS_WEBAPP_URL) {
             console.warn("GOOGLE_SHEETS_WEBAPP_URL not configured. Simulating success.");
             await new Promise((resolve) => setTimeout(resolve, 800));
             return { success: true };
         }
 
-        const prizeData = getPrizeDataByName(prizeName);
-        const resultType = prizeData && prizeData.type === "prize" ? "Phần thưởng" : "Lời chúc";
+        // Only send the exact 3 fields requested by the user
+        const formBody = new URLSearchParams();
+        formBody.append("Thời gian", new Date().toLocaleString("vi-VN"));
+        formBody.append("Phone", formData.phoneNumber);
+        formBody.append("Tên phần thưởng", prizeName);
 
-        const jsonPayload = {
-            "Thời gian": timestamp,
-            "Phone": formData.phoneNumber,
-            "Tên phần thưởng": prizeName,
-            "Loại": resultType,
-        };
-
-        // POST to sheets endpoint using no-cors mode
+        // POST to sheets endpoint using form urlencoded to populate e.parameter in Google Apps Script
         await fetch(GOOGLE_SHEETS_WEBAPP_URL, {
             method: "POST",
             mode: "no-cors",
             headers: {
-                "Content-Type": "application/json",
+                "Content-Type": "application/x-www-form-urlencoded",
             },
-            body: JSON.stringify(jsonPayload),
+            body: formBody,
         });
 
         return { success: true };
