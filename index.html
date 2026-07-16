@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mẹ & Bé – Vòng Quay May Mắn</title>
+    <!-- Premium Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+    <!-- Confetti CDN for winner celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Decorative visual elements (Blobs & floating icons) -->
+    <div class="blob top-left"></div>
+    <div class="blob bottom-right"></div>
+    <div class="blob center-right"></div>
+    
+    <div class="emoji-decor pulse" style="top: 80px; right: 32px; font-size: 36px; animation-duration: 4s;">🌸</div>
+    <div class="emoji-decor" style="top: 192px; left: 16px; font-size: 30px;">🌷</div>
+    <div class="emoji-decor" style="bottom: 160px; right: 24px; font-size: 30px;">🍀</div>
+    <div class="emoji-decor" style="bottom: 96px; left: 20px; font-size: 24px;">⭐</div>
+    <div class="emoji-decor" style="top: 50%; right: 48px; font-size: 24px; opacity: 0.1;">🦋</div>
+
+    <!-- App Wrapper -->
+    <div class="app-wrapper">
+        
+        <!-- PHASE 1: LANDING PAGE -->
+        <div id="screen-landing" class="screen active">
+            <div class="logo-container">
+                <div class="logo-badge">
+                    <span class="logo-emoji">🤱</span>
+                </div>
+                <div class="logo-brand">
+                    <span class="logo-title">Mẹ & Bé</span>
+                    <span class="logo-subtitle">Chuỗi sản phẩm cho mẹ bầu</span>
+                </div>
+            </div>
+            
+            <div class="hero-container">
+                <div class="hero-gift">🎁</div>
+                
+                <div class="glass-card">
+                    <h1 class="landing-title">
+                        Vòng Quay<br>
+                        <span class="pink-gradient-text">May Mắn</span> 🌸
+                    </h1>
+                    
+                    <div class="emoji-row">
+                        <span>🍼</span>
+                        <span>👶</span>
+                        <span>🤰</span>
+                        <span>💕</span>
+                        <span>🌷</span>
+                    </div>
+                    
+                    <p class="landing-description">
+                        Dành tặng các mẹ bầu và bé yêu những phần quà ý nghĩa từ Mẹ & Bé! Nhấn nút bên dưới để tham gia.
+                    </p>
+                    
+                    <button id="btn-go-to-spin" class="btn btn-primary btn-landing">
+                        Tham gia ngay! 🎊
+                    </button>
+                    
+                    <p class="footnote">Mỗi khách hàng tham gia 1 lần duy nhất</p>
+                </div>
+            </div>
+            
+            <footer class="footer">
+                <p class="footer-primary">💕 Mẹ & Bé – Đồng hành cùng mẹ bầu</p>
+                <p class="footer-secondary">© 2026 Mẹ & Bé. All rights reserved.</p>
+            </footer>
+        </div>
+
+        <!-- PHASE 2: SPIN WHEEL -->
+        <div id="screen-spin" class="screen">
+            <header class="header">
+                <div class="logo-container small">
+                    <div class="logo-badge small">
+                        <span class="logo-emoji small">🤱</span>
+                    </div>
+                    <div class="logo-brand">
+                        <span class="logo-title small">MẸ & BÉ</span>
+                        <span class="logo-subtitle small">Vòng Quay May Mắn</span>
+                    </div>
+                </div>
+                
+                <button id="btn-reset-demo" class="btn-reset" title="Reset lượt chơi để test">
+                    🔄
+                </button>
+            </header>
+            
+            <div class="spin-container">
+                <div class="spin-intro">
+                    <h2 class="spin-welcome">Chào mừng bạn! 🌸</h2>
+                    <p class="spin-help">Nhấn vào vòng quay hoặc nút bên dưới để bắt đầu</p>
+                </div>
+                
+                <!-- Wheel Component -->
+                <div class="wheel-outer-wrapper">
+                    <div class="wheel-pointer-container">
+                        <div class="wheel-pointer">
+                            <div class="pointer-heart">♥</div>
+                        </div>
+                    </div>
+                    
+                    <div id="wheel-rotation-target" class="wheel-rotation-target">
+                        <canvas id="wheel-canvas" width="800" height="800"></canvas>
+                    </div>
+                    
+                    <button id="btn-hub" class="wheel-hub" aria-label="Nhấn để quay">
+                        <div class="hub-content">
+                            <span class="hub-icon">🍼</span>
+                            <span class="hub-text">Quay!</span>
+                        </div>
+                    </button>
+                </div>
+                
+                <!-- Main Action Button -->
+                <div class="action-container">
+                    <button id="btn-spin" class="btn btn-primary btn-spin-big">
+                        <span class="btn-spin-content">
+                            <span>🎁</span>
+                            <span>Quay ngay!</span>
+                        </span>
+                    </button>
+                    
+                    <div class="player-info-badge">
+                        Chào <span id="user-name-display" class="bold-username">Khách hàng</span> 👋 (<span id="user-phone-display">0909181752</span>)
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PHASE 3: ALREADY SPUN -->
+        <div id="screen-already-spun" class="screen">
+            <div class="logo-container small" style="margin-bottom: 24px;">
+                <div class="logo-badge small">
+                    <span class="logo-emoji small">🤱</span>
+                </div>
+                <div class="logo-brand">
+                    <span class="logo-title small">MẸ & BÉ</span>
+                    <span class="logo-subtitle small">Vòng Quay May Mắn</span>
+                </div>
+            </div>
+            
+            <div class="already-spun-container">
+                <div class="glass-card compact">
+                    <div class="already-spun-emoji">🌹</div>
+                    
+                    <h1 class="already-spun-title">Bạn đã tham gia rồi!</h1>
+                    <p class="already-spun-description">
+                        Mỗi khách hàng chỉ được tham gia 1 lần. Cảm ơn bạn đã ủng hộ Mẹ & Bé! 💕
+                    </p>
+                    
+                    <div class="saved-result-card">
+                        <div class="prize-image-frame">
+                            <img id="already-prize-img" src="" alt="Phần thưởng" />
+                        </div>
+                        <span class="prize-badge-label">Phần thưởng của bạn</span>
+                        <span id="already-prize-name" class="saved-prize-title">Voucher 100K</span>
+                        
+                        <div class="saved-user-details">
+                            <div id="details-name">👤 Khách hàng</div>
+                            <div id="details-phone">📱 0909181752</div>
+                        </div>
+                    </div>
+                    
+                    <button id="btn-back-home" class="btn btn-outline">
+                        Về trang chủ
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- WINNER MODAL -->
+    <div id="result-modal" class="modal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-wrapper">
+            <div class="modal-top-bar"></div>
+            <div class="modal-body">
+                <div class="modal-trophy">🏆</div>
+                <h2 class="modal-congrats-title">Chúc mừng!</h2>
+                <p class="modal-congrats-subtitle">Bạn đã nhận được phần thưởng đặc biệt từ Mẹ & Bé 💕</p>
+                
+                <div class="modal-prize-card">
+                    <div class="prize-image-frame large">
+                        <img id="modal-prize-img" src="" alt="Phần thưởng" />
+                    </div>
+                    <span class="prize-badge-label">🎁 Phần thưởng của bạn</span>
+                    <span id="modal-prize-name" class="modal-prize-title-text">Voucher 100K</span>
+                </div>
+                
+                <div class="modal-flowers-decor">
+                    <span>🌸</span><span>🍼</span><span>💕</span><span>👶</span><span>🌷</span>
+                </div>
+                
+                <button id="btn-modal-close" class="btn btn-primary">
+                    Tuyệt vời! ✨
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LOADING OVERLAY -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner">🌸</div>
+        <div id="loading-message" class="loading-message">Đang tải...</div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
