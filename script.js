@@ -597,19 +597,47 @@ async function triggerSpin() {
     // Determine target prize name (support RANDOM or forced override)
     let finalWinningPrizeName = CONFIGURABLE_WINNING_PRIZE;
     if (CONFIGURABLE_WINNING_PRIZE.toUpperCase() === "RANDOM") {
-        // 50 physical prizes for 250 participants = 20% win probability
-        // 80% probability of getting a beautiful blessing
-        const winChance = Math.random() * 100;
-        if (winChance < 20) {
-            // Win a physical product (20% chance) - shared equally among 3 products
-            const physicalProducts = PRIZES.filter(p => p.type === "prize");
-            const chosenProduct = physicalProducts[Math.floor(Math.random() * physicalProducts.length)];
-            finalWinningPrizeName = chosenProduct.name;
+        // Stock limits: Zihot = 10, Dimao = 20, Femax = 20 (total 50)
+        const prizeCounts = checkResult.prizeCounts || {
+            "dimao vitamin d3": 0,
+            "fe-max iron spray": 0,
+            "zihot oral spray": 0
+        };
+
+        // Build list of products that still have stock
+        const stockConfig = [
+            { name: "Zihot Oral Spray", key: "zihot oral spray", limit: 10 },
+            { name: "Dimao Vitamin D3", key: "dimao vitamin d3", limit: 20 },
+            { name: "Fe-max Iron Spray", key: "fe-max iron spray", limit: 20 },
+        ];
+        const availableProducts = stockConfig.filter(
+            p => (prizeCounts[p.key] || 0) < p.limit
+        );
+
+        console.log("Prize stock status:", stockConfig.map(p => ({
+            product: p.name,
+            awarded: prizeCounts[p.key] || 0,
+            limit: p.limit,
+            remaining: p.limit - (prizeCounts[p.key] || 0)
+        })));
+        console.log("Available products:", availableProducts.length);
+
+        // 20% chance to win a physical prize
+        const winRoll = Math.random() * 100;
+
+        if (winRoll < 20 && availableProducts.length > 0) {
+            // Won! Pick equally among products that still have stock
+            const chosen = availableProducts[Math.floor(Math.random() * availableProducts.length)];
+            finalWinningPrizeName = chosen.name;
+            console.log(`🎉 Won physical prize: ${chosen.name}`);
         } else {
-            // Get a blessing (80% chance) - shared equally among 5 blessings
+            // 80% chance OR all 50 prizes exhausted → blessing
             const blessings = PRIZES.filter(p => p.type === "blessing");
             const chosenBlessing = blessings[Math.floor(Math.random() * blessings.length)];
             finalWinningPrizeName = chosenBlessing.name;
+            if (availableProducts.length === 0) {
+                console.log("All 50 physical prizes exhausted. Giving blessing.");
+            }
         }
     }
 
@@ -847,24 +875,52 @@ function checkPhoneInGoogleSheet(phoneNumber) {
             const normalize = (num) => num.replace(/[\s\-().+]/g, "").replace(/^84/, "0");
             const normalizedTarget = normalize(cleanPhone);
 
+            // Initialize prize counts for the 3 main products (case-insensitive keys)
+            const prizeCounts = {
+                "dimao vitamin d3": 0,
+                "fe-max iron spray": 0,
+                "zihot oral spray": 0
+            };
+
+            let matchedRow = null;
+
             for (const row of rows) {
+                // 1. Check for phone match
                 if (row.c && row.c[phoneColIdx]) {
                     const cellVal = String(row.c[phoneColIdx].v || "").trim();
                     if (normalize(cellVal) === normalizedTarget) {
-                        let alreadySpun = false;
-                        let registeredPrize = "";
-                        if (row.c[prizeColIdx] && row.c[prizeColIdx].v) {
-                            registeredPrize = String(row.c[prizeColIdx].v).trim();
-                            if (registeredPrize !== "") {
-                                alreadySpun = true;
-                            }
-                        }
-                        resolve({ exists: true, alreadySpun: alreadySpun, prize: registeredPrize });
-                        return;
+                        matchedRow = row;
+                    }
+                }
+
+                // 2. Count physical prizes across all rows to determine remaining stock
+                if (row.c && row.c[prizeColIdx] && row.c[prizeColIdx].v) {
+                    const prizeVal = String(row.c[prizeColIdx].v).trim().toLowerCase();
+                    if (prizeVal in prizeCounts) {
+                        prizeCounts[prizeVal]++;
                     }
                 }
             }
-            resolve({ exists: false });
+
+            if (matchedRow) {
+                let alreadySpun = false;
+                let registeredPrize = "";
+                if (matchedRow.c[prizeColIdx] && matchedRow.c[prizeColIdx].v) {
+                    registeredPrize = String(matchedRow.c[prizeColIdx].v).trim();
+                    if (registeredPrize !== "") {
+                        alreadySpun = true;
+                    }
+                }
+                resolve({ 
+                    exists: true, 
+                    alreadySpun: alreadySpun, 
+                    prize: registeredPrize,
+                    prizeCounts: prizeCounts 
+                });
+                return;
+            }
+
+            resolve({ exists: false, prizeCounts: prizeCounts });
         };
 
         // Create script tag to make JSONP request
