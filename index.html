@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mẹ & Bé – Vòng Quay May Mắn</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
     <!-- Premium Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -12,12 +14,13 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <!-- Decorative visual elements (Blobs & floating icons) -->
     <div class="blob top-left"></div>
     <div class="blob bottom-right"></div>
     <div class="blob center-right"></div>
-    
+
     <div class="emoji-decor pulse" style="top: 80px; right: 32px; font-size: 36px; animation-duration: 4s;">🌸</div>
     <div class="emoji-decor" style="top: 192px; left: 16px; font-size: 30px;">🌷</div>
     <div class="emoji-decor" style="bottom: 160px; right: 24px; font-size: 30px;">🍀</div>
@@ -26,7 +29,7 @@
 
     <!-- App Wrapper -->
     <div class="app-wrapper">
-        
+
         <!-- PHASE 1: LANDING PAGE -->
         <div id="screen-landing" class="screen active">
             <div class="logo-container">
@@ -38,16 +41,16 @@
                     <span class="logo-subtitle">Chuỗi sản phẩm cho mẹ bầu</span>
                 </div>
             </div>
-            
+
             <div class="hero-container">
                 <div class="hero-gift">🎁</div>
-                
+
                 <div class="glass-card">
                     <h1 class="landing-title">
                         Vòng Quay<br>
                         <span class="pink-gradient-text">May Mắn</span> 🌸
                     </h1>
-                    
+
                     <div class="emoji-row">
                         <span>🍼</span>
                         <span>👶</span>
@@ -55,24 +58,27 @@
                         <span>💕</span>
                         <span>🌷</span>
                     </div>
-                    
+
                     <p class="landing-description">
-                        Dành tặng các mẹ bầu và bé yêu những phần quà ý nghĩa từ Mẹ & Bé! Vui lòng nhập số điện thoại để bắt đầu:
+                        Dành tặng các mẹ bầu và bé yêu những phần quà ý nghĩa từ Mẹ & Bé! Vui lòng nhập số điện thoại để
+                        bắt đầu:
                     </p>
 
                     <div class="phone-verification-box" style="margin-bottom: 20px;">
-                        <input type="tel" id="input-phone" class="phone-input-field" placeholder="Nhập số điện thoại của bạn..." maxlength="11" />
-                        <span id="phone-error-msg" class="phone-error-text" style="display: none;">⚠️ Số điện thoại không hợp lệ!</span>
+                        <input type="tel" id="input-phone" class="phone-input-field"
+                            placeholder="Nhập số điện thoại của bạn..." maxlength="11" />
+                        <span id="phone-error-msg" class="phone-error-text" style="display: none;">⚠️ Số điện thoại
+                            không hợp lệ!</span>
                     </div>
-                    
+
                     <button id="btn-go-to-spin" class="btn btn-primary btn-landing">
                         Tham gia ngay! 🎊
                     </button>
-                    
+
                     <p class="footnote">Mỗi khách hàng tham gia 1 lần duy nhất</p>
                 </div>
             </div>
-            
+
             <footer class="footer">
                 <p class="footer-primary">💕 Mẹ & Bé – Đồng hành cùng mẹ bầu</p>
                 <p class="footer-secondary">© 2026 Mẹ & Bé. All rights reserved.</p>
@@ -91,18 +97,18 @@
                         <span class="logo-subtitle small">Vòng Quay May Mắn</span>
                     </div>
                 </div>
-                
-                <button id="btn-reset-demo" class="btn-reset" title="Reset lượt chơi để test">
+
+                <!-- <button id="btn-reset-demo" class="btn-reset" title="Reset lượt chơi để test">
                     🔄
-                </button>
+                </button> -->
             </header>
-            
+
             <div class="spin-container">
                 <div class="spin-intro">
                     <h2 class="spin-welcome">Chào mừng bạn! 🌸</h2>
                     <p class="spin-help">Nhấn vào vòng quay hoặc nút bên dưới để bắt đầu</p>
                 </div>
-                
+
                 <!-- Wheel Component -->
                 <div class="wheel-outer-wrapper">
                     <div class="wheel-pointer-container">
@@ -110,11 +116,11 @@
                             <div class="pointer-heart">♥</div>
                         </div>
                     </div>
-                    
+
                     <div id="wheel-rotation-target" class="wheel-rotation-target">
                         <canvas id="wheel-canvas" width="800" height="800"></canvas>
                     </div>
-                    
+
                     <button id="btn-hub" class="wheel-hub" aria-label="Nhấn để quay">
                         <div class="hub-content">
                             <span class="hub-icon">🍼</span>
@@ -122,7 +128,7 @@
                         </div>
                     </button>
                 </div>
-                
+
                 <!-- Main Action Button -->
                 <div class="action-container">
                     <button id="btn-spin" class="btn btn-primary btn-spin-big">
@@ -131,10 +137,11 @@
                             <span>Quay ngay!</span>
                         </span>
                     </button>
-                    
-                    <div class="player-info-badge">
-                        Chào <span id="user-name-display" class="bold-username">Khách hàng</span> 👋 (<span id="user-phone-display">0909181752</span>)
-                    </div>
+
+                    <!-- <div class="player-info-badge">
+                        Chào <span id="user-name-display" class="bold-username">Khách hàng</span> 👋 (<span
+                            id="user-phone-display">0909181752</span>)
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -150,30 +157,29 @@
                     <span class="logo-subtitle small">Vòng Quay May Mắn</span>
                 </div>
             </div>
-            
+
             <div class="already-spun-container">
                 <div class="glass-card compact">
                     <div class="already-spun-emoji">🌹</div>
-                    
+
                     <h1 class="already-spun-title">Bạn đã tham gia rồi!</h1>
                     <p class="already-spun-description">
                         Mỗi khách hàng chỉ được tham gia 1 lần. Cảm ơn bạn đã ủng hộ Mẹ & Bé! 💕
                     </p>
-                    
-                    <div class="saved-result-card">
+
+                    <div class="saved-result-card" style="display: none;">
                         <div class="prize-image-frame">
                             <img id="already-prize-img" src="" alt="Phần thưởng" />
                         </div>
                         <span id="already-prize-badge-label" class="prize-badge-label">Phần thưởng của bạn</span>
                         <div id="already-prize-name" class="saved-prize-title">Voucher 100K</div>
                         <div id="already-prize-desc" class="saved-prize-description-text" style="display: none;"></div>
-                        
-                        <div class="saved-user-details">
-                            <div id="details-name">👤 Khách hàng</div>
+
+                        <!-- <div class="saved-user-details">
                             <div id="details-phone">📱 0909181752</div>
-                        </div>
+                        </div> -->
                     </div>
-                    
+
                     <button id="btn-back-home" class="btn btn-outline">
                         Về trang chủ
                     </button>
@@ -192,7 +198,7 @@
                 <div class="modal-trophy">🏆</div>
                 <h2 class="modal-congrats-title">Chúc mừng!</h2>
                 <p class="modal-congrats-subtitle">Bạn đã nhận được phần thưởng đặc biệt từ Mẹ & Bé 💕</p>
-                
+
                 <div class="modal-prize-card">
                     <div class="prize-image-frame large">
                         <img id="modal-prize-img" src="" alt="Phần thưởng" />
@@ -201,11 +207,11 @@
                     <div id="modal-prize-name" class="modal-prize-title-text">Voucher 100K</div>
                     <div id="modal-prize-desc" class="modal-prize-description-text" style="display: none;"></div>
                 </div>
-                
+
                 <div class="modal-flowers-decor">
                     <span>🌸</span><span>🍼</span><span>💕</span><span>👶</span><span>🌷</span>
                 </div>
-                
+
                 <button id="btn-modal-close" class="btn btn-primary">
                     Tuyệt vời! ✨
                 </button>
@@ -221,4 +227,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
