@@ -137,7 +137,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // 3. Check for previous participation
-    checkParticipation();
+    // checkParticipation();
 
     // 4. Hook up event listeners
     btnGoToSpin.addEventListener("click", async () => {
@@ -213,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 gender: registeredUser.gender
             };
             try {
-                localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+                // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
                 previousSpinRecorded = data;
                 renderAlreadySpunScreen(data);
                 setTimeout(() => {
@@ -487,21 +487,6 @@ function playTickSound(duration) {
 }
 
 // Local Storage state validation
-function checkParticipation() {
-    try {
-        const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
-        if (stored) {
-            const parsed = JSON.parse(stored);
-            if (parsed && parsed.hasSpun) {
-                previousSpinRecorded = parsed;
-                renderAlreadySpunScreen(parsed);
-                showScreen("alreadySpun");
-            }
-        }
-    } catch (e) {
-        console.error("Failed to read from localStorage", e);
-    }
-}
 
 // Render the completed spin screen
 function renderAlreadySpunScreen(data) {
@@ -597,7 +582,7 @@ async function triggerSpin() {
             gender: registeredUser.gender
         };
         try {
-            localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+            // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
             previousSpinRecorded = data;
             renderAlreadySpunScreen(data);
             showScreen("alreadySpun");
@@ -693,7 +678,7 @@ async function onSpinComplete(prizeName) {
     };
 
     try {
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+        // localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
         previousSpinRecorded = data;
         renderAlreadySpunScreen(data);
     } catch (e) {
