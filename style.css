@@ -962,3 +962,185 @@ body {
     20%, 60% { transform: translateX(-6px); }
     40%, 80% { transform: translateX(6px); }
 }
+
+/* Media Queries for Mobile Responsiveness */
+@media (max-width: 480px) {
+    .app-wrapper {
+        padding: 16px 12px;
+    }
+    
+    .logo-container {
+        margin-top: 8px;
+        margin-bottom: 16px;
+        gap: 8px;
+    }
+    
+    .logo-badge {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .logo-emoji {
+        font-size: 20px;
+    }
+    
+    .logo-title {
+        font-size: 22px;
+    }
+    
+    .logo-subtitle {
+        font-size: 9px;
+        letter-spacing: 0.1em;
+    }
+    
+    .hero-gift {
+        font-size: 56px;
+    }
+    
+    .glass-card {
+        padding: 20px 16px;
+        border-radius: 20px;
+    }
+    
+    .landing-title {
+        font-size: 22px;
+        margin-bottom: 4px;
+    }
+    
+    .landing-description {
+        font-size: 13px;
+        margin-bottom: 18px;
+        line-height: 1.5;
+    }
+    
+    .btn {
+        padding: 12px 18px;
+        font-size: 16px;
+        border-radius: 14px;
+    }
+    
+    .phone-input-field {
+        padding: 12px;
+        font-size: 15px;
+        border-radius: 12px;
+    }
+    
+    .spin-welcome {
+        font-size: 20px;
+    }
+    
+    .spin-help {
+        font-size: 12px;
+    }
+    
+    .wheel-outer-wrapper {
+        max-width: 310px;
+    }
+    
+    .wheel-hub {
+        width: 72px;
+        height: 72px;
+    }
+    
+    .hub-icon {
+        font-size: 18px;
+    }
+    
+    .hub-text {
+        font-size: 8px;
+    }
+    
+    .pointer-heart {
+        width: 30px;
+        height: 38px;
+        font-size: 13px;
+    }
+    
+    .pointer-heart::after {
+        width: 8px;
+        height: 8px;
+        top: 3px;
+    }
+    
+    .wheel-pointer-container {
+        top: -18px;
+    }
+    
+    .modal-wrapper {
+        border-radius: 24px;
+    }
+    
+    .modal-body {
+        padding: 20px 16px;
+    }
+    
+    .modal-trophy {
+        font-size: 48px;
+        margin-bottom: 8px;
+    }
+    
+    .modal-congrats-title {
+        font-size: 24px;
+    }
+    
+    .modal-congrats-subtitle {
+        font-size: 12px;
+        margin-bottom: 16px;
+    }
+    
+    .modal-prize-card {
+        padding: 12px;
+        border-radius: 18px;
+    }
+    
+    .prize-image-frame.large {
+        width: 100px;
+        height: 100px;
+        border-radius: 14px;
+    }
+    
+    .modal-prize-title-text {
+        font-size: 19px;
+    }
+    
+    .modal-prize-description-text {
+        font-size: 12px;
+        margin-top: 8px;
+    }
+}
+
+/* Additional adjustment for very short height screens (e.g. mobile height < 700px) */
+@media (max-height: 700px) and (max-width: 480px) {
+    .logo-container {
+        margin-bottom: 8px;
+    }
+    
+    .hero-gift {
+        font-size: 40px;
+    }
+    
+    .hero-container {
+        gap: 8px;
+    }
+    
+    .landing-description {
+        margin-bottom: 12px;
+    }
+    
+    .wheel-outer-wrapper {
+        max-width: 270px;
+    }
+    
+    .spin-container {
+        gap: 12px;
+    }
+    
+    .already-spun-emoji {
+        font-size: 40px;
+        margin-bottom: 8px;
+    }
+    
+    .already-spun-description {
+        margin-bottom: 16px;
+    }
+}
