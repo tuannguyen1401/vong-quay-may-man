@@ -259,7 +259,13 @@ function showScreen(screenId) {
     screenAlreadySpun.classList.remove("active");
 
     if (screenId === "landing") screenLanding.classList.add("active");
-    else if (screenId === "spin") screenSpin.classList.add("active");
+    else if (screenId === "spin") {
+        // Reset spin state for new user session
+        isSpinning = false;
+        btnSpin.disabled = false;
+        btnHub.disabled = false;
+        screenSpin.classList.add("active");
+    }
     else if (screenId === "alreadySpun") screenAlreadySpun.classList.add("active");
 }
 
@@ -911,11 +917,11 @@ function checkPhoneInGoogleSheet(phoneNumber) {
                         alreadySpun = true;
                     }
                 }
-                resolve({ 
-                    exists: true, 
-                    alreadySpun: alreadySpun, 
+                resolve({
+                    exists: true,
+                    alreadySpun: alreadySpun,
                     prize: registeredPrize,
-                    prizeCounts: prizeCounts 
+                    prizeCounts: prizeCounts
                 });
                 return;
             }
@@ -981,26 +987,3 @@ function hideLoading() {
     loadingOverlay.classList.remove("active");
 }
 
-// Reset LocalStorage demo helper
-function handleResetDemo() {
-    if (confirm("Reset trạng thái lượt chơi để quay thử lại?")) {
-        try {
-            localStorage.removeItem(LOCAL_STORAGE_KEY);
-
-            // Reset wheel positions
-            wheelTarget.style.transition = "none";
-            wheelTarget.style.transform = "rotate(0deg)";
-            currentRotation = 0;
-
-            // Reset buttons
-            btnSpin.disabled = false;
-            btnHub.disabled = false;
-
-            // Go back to landing page
-            showScreen("landing");
-            window.location.reload();
-        } catch (e) {
-            console.error("Reset failed", e);
-        }
-    }
-}
