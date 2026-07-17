@@ -4,18 +4,18 @@
     --primary-gradient: linear-gradient(to right, #ec4899, #f43f5e, #ec4899);
     --hub-gradient: linear-gradient(135deg, #fff0f6, #fbcfe8);
     --gold-gradient: linear-gradient(135deg, #f9a8d4, #fde68a 50%, #c4b5fd);
-    
+
     --rose-700: #be123c;
     --rose-600: #e11d48;
     --rose-500: #f43f5e;
     --rose-400: #fb7185;
-    
+
     --pink-600: #db2777;
     --pink-500: #ec4899;
     --pink-400: #f472b6;
     --pink-300: #fbcfe8;
     --pink-200: #fbcfe8;
-    
+
     --shadow-premium: 0 20px 25px -5px rgba(244, 114, 182, 0.15), 0 10px 10px -5px rgba(244, 114, 182, 0.1);
     --shadow-button: 0 10px 15px -3px rgba(244, 114, 182, 0.4), 0 4px 6px -2px rgba(244, 114, 182, 0.2);
     --shadow-hub: 0 10px 20px rgba(244, 114, 182, 0.35);
@@ -54,7 +54,8 @@ body {
     left: 0;
     width: 320px;
     height: 320px;
-    background: rgba(251, 207, 232, 0.5); /* pink-200/50 */
+    background: rgba(251, 207, 232, 0.5);
+    /* pink-200/50 */
     transform: translate(-33%, -33%);
 }
 
@@ -63,7 +64,8 @@ body {
     right: 0;
     width: 384px;
     height: 384px;
-    background: rgba(221, 214, 254, 0.4); /* purple-200/40 */
+    background: rgba(221, 214, 254, 0.4);
+    /* purple-200/40 */
     transform: translate(25%, 25%);
 }
 
@@ -72,7 +74,8 @@ body {
     right: 0;
     width: 224px;
     height: 224px;
-    background: rgba(253, 230, 138, 0.3); /* amber-200/30 */
+    background: rgba(253, 230, 138, 0.3);
+    /* amber-200/30 */
     transform: translate(10%, 0);
 }
 
@@ -86,8 +89,17 @@ body {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 0.15; transform: scale(1); }
-    50% { opacity: 0.08; transform: scale(0.92); }
+
+    0%,
+    100% {
+        opacity: 0.15;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.08;
+        transform: scale(0.92);
+    }
 }
 
 .pulse {
@@ -150,6 +162,15 @@ body {
     flex-direction: column;
 }
 
+.logo-img {
+    position: relative;
+    top: 90px;
+    height: 106px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
 .logo-title {
     font-weight: 900;
     font-size: 28px;
@@ -209,7 +230,7 @@ body {
     cursor: pointer;
     font-size: 16px;
     transition: all 0.2s;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-reset:hover {
@@ -235,8 +256,15 @@ body {
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-16px) scale(1.05); }
+
+    0%,
+    100% {
+        transform: translateY(0) scale(1);
+    }
+
+    50% {
+        transform: translateY(-16px) scale(1.05);
+    }
 }
 
 /* Glassmorphism Cards */
@@ -524,7 +552,7 @@ body {
     color: white;
     font-size: 15px;
     font-weight: 900;
-    box-shadow: inset 0 -4px 6px rgba(0,0,0,0.1);
+    box-shadow: inset 0 -4px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* White top pin on heart pointer */
@@ -542,11 +570,27 @@ body {
 }
 
 @keyframes wiggle {
-    0%, 100% { transform: rotate(0deg); }
-    20% { transform: rotate(-12deg); }
-    40% { transform: rotate(10deg); }
-    60% { transform: rotate(-8deg); }
-    80% { transform: rotate(6deg); }
+
+    0%,
+    100% {
+        transform: rotate(0deg);
+    }
+
+    20% {
+        transform: rotate(-12deg);
+    }
+
+    40% {
+        transform: rotate(10deg);
+    }
+
+    60% {
+        transform: rotate(-8deg);
+    }
+
+    80% {
+        transform: rotate(6deg);
+    }
 }
 
 .wiggle {
@@ -647,7 +691,7 @@ body {
     align-items: center;
     justify-content: center;
     margin-bottom: 12px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
 .prize-image-frame img {
@@ -752,8 +796,13 @@ body {
 }
 
 @keyframes scaleTrophy {
-    0% { transform: scale(0) rotate(-30deg); }
-    100% { transform: scale(1) rotate(0); }
+    0% {
+        transform: scale(0) rotate(-30deg);
+    }
+
+    100% {
+        transform: scale(1) rotate(0);
+    }
 }
 
 .modal-congrats-title {
@@ -793,13 +842,15 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45) 50%, transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45) 50%, transparent);
     transform: translateX(-100%);
     animation: shimmer 2.5s infinite;
 }
 
 @keyframes shimmer {
-    100% { transform: translateX(100%); }
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 .prize-image-frame.large {
@@ -853,14 +904,32 @@ body {
     animation: bounceSlow 2s infinite ease-in-out;
 }
 
-.modal-flowers-decor span:nth-child(2) { animation-delay: 0.2s; }
-.modal-flowers-decor span:nth-child(3) { animation-delay: 0.4s; }
-.modal-flowers-decor span:nth-child(4) { animation-delay: 0.6s; }
-.modal-flowers-decor span:nth-child(5) { animation-delay: 0.8s; }
+.modal-flowers-decor span:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.modal-flowers-decor span:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.modal-flowers-decor span:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+.modal-flowers-decor span:nth-child(5) {
+    animation-delay: 0.8s;
+}
 
 @keyframes bounceSlow {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-6px);
+    }
 }
 
 /* Loading Overlay */
@@ -887,8 +956,13 @@ body {
 }
 
 @keyframes loadingSpin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 .loading-message {
@@ -958,9 +1032,21 @@ body {
 }
 
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
+
+    0%,
+    100% {
+        transform: translateX(0);
+    }
+
+    20%,
+    60% {
+        transform: translateX(-6px);
+    }
+
+    40%,
+    80% {
+        transform: translateX(6px);
+    }
 }
 
 /* Media Queries for Mobile Responsiveness */
@@ -968,141 +1054,141 @@ body {
     .app-wrapper {
         padding: 16px 12px;
     }
-    
+
     .logo-container {
         margin-top: 8px;
         margin-bottom: 16px;
         gap: 8px;
     }
-    
+
     .logo-badge {
         width: 44px;
         height: 44px;
     }
-    
+
     .logo-emoji {
         font-size: 20px;
     }
-    
+
     .logo-title {
         font-size: 22px;
     }
-    
+
     .logo-subtitle {
         font-size: 9px;
         letter-spacing: 0.1em;
     }
-    
+
     .hero-gift {
         font-size: 56px;
     }
-    
+
     .glass-card {
         padding: 20px 16px;
         border-radius: 20px;
     }
-    
+
     .landing-title {
         font-size: 22px;
         margin-bottom: 4px;
     }
-    
+
     .landing-description {
         font-size: 13px;
         margin-bottom: 18px;
         line-height: 1.5;
     }
-    
+
     .btn {
         padding: 12px 18px;
         font-size: 16px;
         border-radius: 14px;
     }
-    
+
     .phone-input-field {
         padding: 12px;
         font-size: 15px;
         border-radius: 12px;
     }
-    
+
     .spin-welcome {
         font-size: 20px;
     }
-    
+
     .spin-help {
         font-size: 12px;
     }
-    
+
     .wheel-outer-wrapper {
         max-width: 310px;
     }
-    
+
     .wheel-hub {
         width: 72px;
         height: 72px;
     }
-    
+
     .hub-icon {
         font-size: 18px;
     }
-    
+
     .hub-text {
         font-size: 8px;
     }
-    
+
     .pointer-heart {
         width: 30px;
         height: 38px;
         font-size: 13px;
     }
-    
+
     .pointer-heart::after {
         width: 8px;
         height: 8px;
         top: 3px;
     }
-    
+
     .wheel-pointer-container {
         top: -18px;
     }
-    
+
     .modal-wrapper {
         border-radius: 24px;
     }
-    
+
     .modal-body {
         padding: 20px 16px;
     }
-    
+
     .modal-trophy {
         font-size: 48px;
         margin-bottom: 8px;
     }
-    
+
     .modal-congrats-title {
         font-size: 24px;
     }
-    
+
     .modal-congrats-subtitle {
         font-size: 12px;
         margin-bottom: 16px;
     }
-    
+
     .modal-prize-card {
         padding: 12px;
         border-radius: 18px;
     }
-    
+
     .prize-image-frame.large {
         width: 100px;
         height: 100px;
         border-radius: 14px;
     }
-    
+
     .modal-prize-title-text {
         font-size: 19px;
     }
-    
+
     .modal-prize-description-text {
         font-size: 12px;
         margin-top: 8px;
@@ -1114,32 +1200,32 @@ body {
     .logo-container {
         margin-bottom: 8px;
     }
-    
+
     .hero-gift {
         font-size: 40px;
     }
-    
+
     .hero-container {
         gap: 8px;
     }
-    
+
     .landing-description {
         margin-bottom: 12px;
     }
-    
+
     .wheel-outer-wrapper {
         max-width: 270px;
     }
-    
+
     .spin-container {
         gap: 12px;
     }
-    
+
     .already-spun-emoji {
         font-size: 40px;
         margin-bottom: 8px;
     }
-    
+
     .already-spun-description {
         margin-bottom: 16px;
     }
